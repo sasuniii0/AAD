@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Synchronous and Asynchronous</title>
+</head>
+<body>
+
+<h1>Synchronous and Asynchronous Example</h1>
+
+<script>
+
+    /*/!*Synchronous*!/
+    console.log("start")
+    console.log("middle")
+    console.log("end")*/
+
+    /*Asynchronous*/
+    console.log("start")
+
+    setTimeout(() => {
+        console.log("middle")
+    }, 2000)
+
+    console.log("end")
+</script>
+</body>
+</html>
