@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+</head>
+<body>
+    <h1>AJAX Example</h1>
+
+<p id="para"></p>
+<button id="ajax-btn"> Send An AJAX Request</button>
+<table id="data-table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Age</th>
+        </tr>
+    </thead>
+    <tbody id="table-body">
+    <tr id="row">
+        <td colspan="5"></td>
+    </tr>
+    </tbody>
+</table>
+    <script src="lib/jquery-3.7.1.js"></script>
+
+    <script>
+        $('#ajax-btn').click(function (){
+            /*var http = new XMLHttpRequest();
+            http.open('GET','db.txt')
+            http.send()
+
+            http.onreadystatechange = function (){
+                console.log(http.response)
+            }
+
+            console.log("button Clicked")
+            console.log("request Started")*/
+
+
+            /*--------------------------------------------------------------*/
+
+
+            /*var http = new XMLHttpRequest();
+            console.log(http.readyState,"After the XML HTTP object is created")
+            http.open('GET','db.txt')
+            console.log(http.readyState,"After the open method is called")
+            http.send()
+            console.log(http.readyState,"After the send method is called")
+
+            http.onreadystatechange = function () {
+                console.log(http.readyState,"Inside the onreadystatechange function")
+            }
+            console.log("request finished.. waiting for response")*/
+
+
+            /*--------------------------------------------------------------*/
+
+
+            /*var http = new XMLHttpRequest();
+            http.open('GET','db.txt')
+            http.send()
+
+            http.onreadystatechange = function () {
+                if (http.status === 200 && http.readyState ===0)
+                    $('#para').html(http.responseText)
+            }*/
+
+
+            /*--------------------------------------------------------------*/
+
+
+            $.ajax({
+                url: 'database.json',
+                method:'GET',
+                dataType:'json',
+                success:function (response) {
+                    if (response && (Array.isArray(response))){
+                        if (Array.isArray(response)){
+                            response.forEach(function (text) {
+                                $('#table-body').append(`
+                                    <tr>
+                                        <td>${text.name}</td>
+                                        <td>${text.id}</td>
+                                        <td>${text.age}</td>
+                                    </tr>
+                                `)
+                            })
+                        }
+                        else{
+                            $('#table-body').append(`
+                                <tr>
+                                    <td>${response.name}</td>
+                                    <td>${response.id}</td>
+                                    <td>${response.age}</td>
+                                </tr>
+                            `)
+                        }
+                    }
+                },
+                error:function (xhr, status, error) {
+                    console.error(error)
+                }
+            })
+
+        })
+    </script>
+</body>
+</html>
