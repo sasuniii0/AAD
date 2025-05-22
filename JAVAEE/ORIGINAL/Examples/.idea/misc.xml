@@ -6,6 +6,7 @@
       <list>
         <option value="$PROJECT_DIR$/Mapping-Specification/pom.xml" />
         <option value="$PROJECT_DIR$/MIME-type/pom.xml" />
+        <option value="$PROJECT_DIR$/App-1/pom.xml" />
       </list>
     </option>
   </component>
