@@ -6,6 +6,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
+        h1{
+            padding: 10px;
+        }
         .container {
             margin: 0 auto;
             padding: 20px;
@@ -13,13 +16,21 @@
         .text-end {
             padding: 20px;
         }
-        .event-card {
-            margin-bottom: 20px;
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
         }
-        #eventsContainer {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        input[type="text"], input[type="date"] {
+            padding: 5px;
+            margin: 5px;
         }
     </style>
 </head>
@@ -33,7 +44,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="eventId" name="id" placeholder=" " required>
+                            <input type="text" class="form-control" id="eventId" name="eid" placeholder=" " required>
                             <label for="eventId"><i class="bi bi-tag"></i> Event ID</label>
                         </div>
 
@@ -78,115 +89,190 @@
             </form>
         </section>
 
-        <section class="mt-5">
-            <h3 class="h4 mb-3"><i class="bi bi-list-ul"></i> All Events</h3>
-            <div id="eventsContainer" class="row">
-                <!-- Events will be loaded here dynamically -->
-            </div>
-        </section>
+        <table id="eventTable">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Place</th>
+            </tr>
+            </thead>
+            <tbody id="eventTable-body"></tbody>
+        </table>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 <script>
-    $(document).ready(function () {
-        // Load all events when page loads
-        loadAllEvents();
 
-        // Button to reload all events
-        $("#btnLoadAll").click(function() {
-            loadAllEvents();
+    const url = 'http://localhost:8080/App_1_war_exploded/event'
+
+    function loadAllEvents(data){
+        const table_body = $('#eventTable-body ');
+        table_body.empty();
+        $.each(data, function (index, event) {
+            table_body.append(`
+                <tr>
+                    <td>${event.eid}</td>
+                    <td>${event.ename}</td>
+                    <td>${event.edescription}</td>
+                    <td>${event.edate}</td>
+                    <td>${event.eplace}</td>
+                </tr>
+            `);
         });
-
-        function loadAllEvents() {
-            $.ajax({
-                url: "event",
-                type: "GET",
-                dataType: "json",
-                success: function(data) {
-                    displayEvents(data);
-                },
-                error: function(xhr, status, error) {
-                    alert("Error loading events: " + error);
-                }
-            });
-        }
-
-        function displayEvents(events) {
-            const container = $("#eventsContainer");
-            container.empty(); // Clear existing content
-
-            if (events.length === 0) {
-                container.append('<div class="col-12"><p class="text-muted">No events found</p></div>');
-                return;
+    }
+    $('#btnLoadAll').click(function (){
+        $.ajax({
+            url : url,
+            method : 'GET',
+            success : function (data){
+                loadAllEvents(data);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Data Loaded',
+                    text: 'All events have been loaded successfully!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            },
+            error:function (){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Error fetching event data!',
+                });
             }
-
-            events.forEach(function(event) {
-                const eventCard = `
-                    <div class="col-md-4 event-card">
-                        <div class="card h-100 border-0 shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title">${event.ename}</h5>
-                                <p class="card-text">${event.edescription}</p>
-                                <div class="d-flex justify-content-between">
-                                    <small class="text-muted"><i class="bi bi-calendar"></i> ${event.edate}</small>
-                                    <small class="text-muted"><i class="bi bi-geo-alt"></i> ${event.eplace}</small>
-                                </div>
-                                <div class="mt-2">
-                                    <button class="btn btn-sm btn-outline-primary edit-btn" data-id="${event.id}">Edit</button>
-                                    <button class="btn btn-sm btn-outline-danger delete-btn" data-id="${event.id}">Delete</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>`;
-                container.append(eventCard);
+        })
+    })
+    $('#btnSave').click(function (){
+        const event = {
+            eid : $('#eventId').val(),
+            ename : $('#eventName').val(),
+            edescription : $('#eventDescription').val(),
+            edate : $('#eventDate').val(),
+            eplace : $('#eventPlace').val()
+        };
+        if (!event.eid) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Information',
+                text: 'Event ID is required!',
             });
-
-            // Add click handlers for edit buttons
-            $(".edit-btn").click(function() {
-                const eventId = $(this).data("id");
-                // Find the event in the array and populate the form
-                const event = events.find(e => e.id === eventId);
-                if (event) {
-                    $("#eventId").val(event.id);
-                    $("#eventName").val(event.ename);
-                    $("#eventDescription").val(event.edescription);
-                    $("#eventDate").val(event.edate);
-                    $("#eventPlace").val(event.eplace);
-                }
-            });
+            return;
         }
 
-        // Save button handler
-        $("#btnSave").click(function() {
-            const eventData = {
-                id: $("#eventId").val(),
-                ename: $("#eventName").val(),
-                edescription: $("#eventDescription").val(),
-                edate: $("#eventDate").val(),
-                eplace: $("#eventPlace").val()
-            };
-
-            $.ajax({
-                url: "event",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(eventData),
-                success: function(response) {
-                    alert("Event saved successfully!");
-                    loadAllEvents();
-                    $("#eventForm")[0].reset();
-                },
-                error: function(xhr, status, error) {
-                    alert("Error saving event: " + error);
-                }
-            });
+        $.ajax({
+            url : url,
+            method : 'POST',
+            contentType : 'application/json',
+            data : JSON.stringify(event),
+            success : function (response){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Event has been saved successfully!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                loadAllEvents(data);
+                $('#eventForm')[0].reset();
+            },
+            error : function (){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to save the event!',
+                });
+            }
         });
-
-        // Similar implementations for Update and Delete buttons
-        // ...
+    })
+    $("#btnUpdate").click(function (){
+        const  event = {
+            eid : $('#eventId').val(),
+            ename : $('#eventName').val(),
+            edescription : $('#eventDescription').val(),
+            edate : $('#eventDate').val(),
+            eplace : $('#eventPlace').val()
+        };
+        if (!event.eid) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Information',
+                text: 'Please select an event to update!',
+            });
+            return;
+        }
+        $.ajax({
+            url : url,
+            method : 'PUT',
+            contentType : 'application/json',
+            data : JSON.stringify(event),
+            success : function (response){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Updated!',
+                    text: 'Event has been updated successfully!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                loadAllEvents(data);
+                $('#eventForm')[0].reset();
+            },
+            error : function (){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to update the event!',
+                });
+            }
+        });
+    })
+    $('#btnDelete').click(function (){
+        const eid = $("#eventId").val();
+        if (!eid){
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Information',
+                text: 'Please select an event to delete!',
+            });
+            return
+        }
+        $.ajax({
+            url: url,
+            method: 'DELETE',
+            data: JSON.stringify({eid}),
+            success: function (response) {
+                Swal.fire(
+                    'Deleted!',
+                    'Event has been deleted.',
+                    'success'
+                );
+                loadAllEvents(data);
+                $('#eventForm')[0].reset();
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to delete the event!',
+                });
+            }
+        })
+    })
+    $(document).on('click', '#eventTable-body tr', function() {
+        const cells = $(this).children('td');
+        $('#eventId').val(cells.eq(0).text());
+        $('#eventName').val(cells.eq(1).text());
+        $('#eventDescription').val(cells.eq(2).text());
+        $('#eventDate').val(cells.eq(3).text());
+        $('#eventPlace').val(cells.eq(4).text());
     });
 </script>
 </body>

@@ -26,7 +26,7 @@ public class EventServlet extends HttpServlet {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             try (Connection connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/eventdb?useSSL=false&serverTimezone=UTC",
+                    "jdbc:mysql://localhost:3306/eventdb",
                     "root",
                     "Ijse@1234");
                  Statement stmt = connection.createStatement();
@@ -35,7 +35,7 @@ public class EventServlet extends HttpServlet {
                 List<Map<String, String>> events = new ArrayList<>();
                 while (rst.next()) {
                     Map<String, String> event = new HashMap<>();
-                    event.put("id", rst.getString("id"));
+                    event.put("eid", rst.getString("eid"));
                     event.put("ename", rst.getString("ename"));
                     event.put("edescription", rst.getString("edescription"));
                     event.put("edate", rst.getString("edate"));
@@ -44,47 +44,111 @@ public class EventServlet extends HttpServlet {
                 }
 
                 resp.setContentType("application/json");
-                new ObjectMapper().writeValue(resp.getWriter(), events);
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.writeValue(resp.getWriter(), events);
             }
         } catch (ClassNotFoundException | SQLException e) {
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
+            throw new RuntimeException();
         }
     }
 
-   /* @Override
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            // Parse JSON from request body
-            ObjectMapper mapper = new ObjectMapper();
-            Map <String, String> eventData = mapper.readValue(req.getReader(), Map.class);
+        resp.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
+        resp.setHeader("Access-Control-Allow-Origin", "*");
 
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String,String> event = mapper.readValue(req.getInputStream(), Map.class);
+
+        try{
             Class.forName("com.mysql.cj.jdbc.Driver");
-            try (Connection connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/eventdb?useSSL=false&serverTimezone=UTC",
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/eventdb",
                     "root",
                     "Ijse@1234");
-                 PreparedStatement pstmt = connection.prepareStatement(
-                         "INSERT INTO event (id, ename, edescription, edate, eplace) VALUES (?, ?, ?, ?, ?)")) {
 
-                pstmt.setString(1, eventData.toString());
-                pstmt.setString(2, eventData.get("ename"));
-                pstmt.setString(3, eventData.get("edescription"));
-                pstmt.setString(4, eventData.get("edate"));
-                pstmt.setString(5, eventData.get("eplace"));
+            PreparedStatement pst = connection.prepareStatement(
+                    "INSERT INTO event (eid, ename, edescription, edate, eplace) VALUES (?,?,?,?,?)"
+            );
+            pst.setString(1, event.get("eid"));
+            pst.setString(2, event.get("ename"));
+            pst.setString(3, event.get("edescription"));
+            pst.setString(4, event.get("edate"));
+            pst.setString(5, event.get("eplace"));
 
-                int rowsAffected = pstmt.executeUpdate();
-
-                if (rowsAffected > 0) {
-                    resp.getWriter().write("{\"status\":\"success\"}");
-                } else {
-                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    resp.getWriter().write("{\"error\":\"Failed to save event\"}");
-                }
-            }
-        } catch (Exception e) {
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
+            int rows = pst.executeUpdate();
+            resp.setContentType("application/json");
+            mapper.writeValue(resp.getWriter(), rows);
+        }catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException();
         }
-    }*/
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
+        resp.setHeader("Access-Control-Allow-Origin", "*");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> event = objectMapper.readValue(req.getInputStream(), Map.class);
+
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/eventdb",
+                    "root",
+                    "Ijse@1234");
+
+            PreparedStatement pst = connection.prepareStatement(
+                    "UPDATE event SET ename = ?, edescription = ?, edate = ?, eplace = ? WHERE eid = ?"
+            );
+            pst.setString(1, event.get("ename"));
+            pst.setString(2, event.get("edescription"));
+            pst.setString(3, event.get("edate"));
+            pst.setString(4, event.get("eplace"));
+            pst.setString(5, event.get("eid"));
+
+            int rows = pst.executeUpdate();
+            resp.setContentType("application/json");
+            objectMapper.writeValue(resp.getWriter(), rows);
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
+        resp.setHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        resp.setStatus(HttpServletResponse.SC_OK);
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
+        resp.setHeader("Access-Control-Allow-Origin", "*");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> event = objectMapper.readValue(req.getInputStream(), Map.class);
+        String id = event.get("eid");
+
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/eventdb",
+                    "root",
+                    "Ijse@1234");
+
+            PreparedStatement pst = connection.prepareStatement(
+                    "DELETE FROM event WHERE eid = ?"
+            );
+            pst.setString(1, id);
+            int rows = pst.executeUpdate();
+            resp.setContentType("application/json");
+            objectMapper.writeValue(resp.getWriter(), rows);
+        }catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
 }
