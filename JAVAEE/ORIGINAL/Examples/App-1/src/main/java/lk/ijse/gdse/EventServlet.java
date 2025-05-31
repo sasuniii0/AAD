@@ -21,8 +21,8 @@ public class EventServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
-        resp.setHeader("Access-Control-Allow-Origin", "*");
+        /*resp.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
+        resp.setHeader("Access-Control-Allow-Origin", "*");*/
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             try (Connection connection = DriverManager.getConnection(
@@ -54,8 +54,8 @@ public class EventServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
-        resp.setHeader("Access-Control-Allow-Origin", "*");
+        /*resp.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
+        resp.setHeader("Access-Control-Allow-Origin", "*");*/
 
         ObjectMapper mapper = new ObjectMapper();
         Map<String,String> event = mapper.readValue(req.getInputStream(), Map.class);
@@ -86,8 +86,9 @@ public class EventServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
-        resp.setHeader("Access-Control-Allow-Origin", "*");
+        /*resp.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
+        resp.setHeader("Access-Control-Allow-Origin", "*");*/
+
 
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> event = objectMapper.readValue(req.getInputStream(), Map.class);
@@ -126,29 +127,40 @@ public class EventServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
+
         resp.setHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, String> event = objectMapper.readValue(req.getInputStream(), Map.class);
-        String id = event.get("eid");
+        String id = req.getParameter("eid");
 
-        try{
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/eventdb",
-                    "root",
-                    "Ijse@1234");
+        if (id == null || id.trim().isEmpty()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Event ID (eid) is required");
+            return;
+        }
 
-            PreparedStatement pst = connection.prepareStatement(
-                    "DELETE FROM event WHERE eid = ?"
-            );
+        try (
+                Connection connection = DriverManager.getConnection(
+                        "jdbc:mysql://localhost:3306/eventdb", "root", "Ijse@1234");
+                PreparedStatement pst = connection.prepareStatement(
+                        "DELETE FROM event WHERE eid = ?")
+        ) {
             pst.setString(1, id);
-            int rows = pst.executeUpdate();
-            resp.setContentType("application/json");
-            objectMapper.writeValue(resp.getWriter(), rows);
-        }catch (Exception e) {
-            throw new RuntimeException();
+            int rowsAffected = pst.executeUpdate();
+
+            resp.setContentType("application/json"); // or "application/json" if returning JSON later
+
+            if (rowsAffected > 0) {
+                resp.setStatus(HttpServletResponse.SC_OK);
+                resp.getWriter().write("Event deleted successfully");
+            } else {
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                resp.getWriter().write("Event not found");
+            }
+
+        } catch (SQLException e) {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error: " + e.getMessage());
+        } catch (Exception e) {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unexpected error: " + e.getMessage());
         }
     }
 }
