@@ -1,7 +1,7 @@
 $("#btnSignUp").on("click", function () {
-  var name = $("#name").val();
-  var email = $("#email").val();
-  var password = $("#password").val();
+  const name = $("#name").val();
+  const email = $("#email").val();
+  const password = $("#password").val();
 
   if (name && email && password) {
     $.ajax({

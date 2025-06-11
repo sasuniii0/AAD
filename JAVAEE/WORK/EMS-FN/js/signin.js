@@ -1,6 +1,6 @@
 $("#btnSignIn").on("click", function () {
-  var email = $("#email").val();
-  var password = $("#password").val();
+  const email = $("#email").val();
+  const password = $("#password").val();
 
   $.ajax({
     method: "POST",
