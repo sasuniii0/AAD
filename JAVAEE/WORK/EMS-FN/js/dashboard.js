@@ -6,6 +6,22 @@ $(document).ready(function () {
     alert("Welcome to the dashboard, " + email);
     fetchEmployee();
   }
+
+  $("#empPicture").on("change", function () {
+    const file = this.files[0];
+    if (file) {
+      currentImageFile = file;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        $("#imgPreview").attr("src", e.target.result).show();
+      };
+      reader.readAsDataURL(file);
+    } else {
+      $("#imgPreview").hide();
+      currentImageFile = null;
+    }
+  });
 });
 
 $("#saveBtn").on("click", function () {
@@ -13,19 +29,18 @@ $("#saveBtn").on("click", function () {
   formData.append("empName", $("#empName").val());
   formData.append("empAddress", $("#empAddress").val());
   formData.append("empEmail", $("#empEmail").val());
-  formData.append("empImage", currentImageFile);
 
-  const fileInput = $('#empPicture')[0];
+  const fileInput = $("#empPicture")[0];
   if (fileInput.files.length > 0) {
-      formData.append('empPicture', fileInput.files[0]);
-  }else {
-        alert("Please select an image file.");
-        return;
+    formData.append("empPicture", fileInput.files[0]); // ✅ This is correct
+  } else {
+    alert("Please select an image file.");
+    return;
   }
 
   $.ajax({
     method: "POST",
-    URL: "http://localhost:8080/EMS_war_exploded/employee",
+    url: "http://localhost:8080/EMS_war_exploded/employee",
     processData: false,
     contentType: false,
     data: formData,
@@ -47,7 +62,7 @@ $("#saveBtn").on("click", function () {
 function fetchEmployee() {
   $.ajax({
     method: "GET",
-    URL: "http://localhost:8080/EMS_war_exploded/employee",
+    url: "http://localhost:8080/EMS_war_exploded/employee",
     success: function (response) {
       if (response.code === "200") {
         const employees = response.data;
@@ -56,14 +71,14 @@ function fetchEmployee() {
         employees.forEach(function (employee) {
           employeeTbl.append(
             `<tr>
-                        <td>
-                           <img src="/assets/${employee.empPicture}" alt="Employee Image" width="60" height="60" />
-                        </td>
-                        <td>${employee.empId}</td>
-                        <td>${employee.empName}</td>
-                        <td>${employee.empAddress}</td>
-                        <td>${employee.empEmail}</td>
-                    </tr>`
+              <td>
+                <img src="/assets/${employee.empPicture}" alt="Employee Image" width="60" height="60" />
+              </td>
+              <td>${employee.empId}</td>
+              <td>${employee.empName}</td>
+              <td>${employee.empAddress}</td>
+              <td>${employee.empEmail}</td>
+            </tr>`
           );
         });
       } else {
