@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        h1{
+            padding: 10px;
+        }
+        .container {
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .text-end {
+            padding: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        input[type="text"], input[type="date"] {
+            padding: 5px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="customer-content">
+    <div id="sec">
+        <section>
+            <h1 class="h2" id="title"><i class="bi bi-calendar-event me-2"></i>Event Management</h1>
+
+            <form id="eventForm" class="needs-validation" novalidate>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="eventId" name="eid" placeholder=" " required>
+                            <label for="eventId"><i class="bi bi-tag"></i> Event ID</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="eventName" name="ename" placeholder=" ">
+                            <label for="eventName"><i class="bi bi-card-heading"></i> Event Name</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <textarea class="form-control" id="eventDescription" name="edescription" placeholder=" " style="height: 100px"></textarea>
+                            <label for="eventDescription"><i class="bi bi-text-paragraph"></i> Description</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="date" class="form-control" id="eventDate" name="edate" placeholder=" ">
+                            <label for="eventDate"><i class="bi bi-calendar-date"></i> Date</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="eventPlace" name="eplace" placeholder=" ">
+                            <label for="eventPlace"><i class="bi bi-geo-alt"></i> Location</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons text-end">
+                    <button type="button" class="btn btn-success" id="btnSave">
+                        <i class="bi bi-check-circle"></i> Save
+                    </button>
+                    <button type="button" class="btn btn-danger" id="btnDelete">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                    <button type="button" class="btn btn-info text-white" id="btnUpdate">
+                        <i class="bi bi-arrow-counterclockwise"></i> Update
+                    </button>
+                    <button type="button" class="btn btn-primary" id="btnLoadAll">
+                        <i class="bi bi-arrow-repeat"></i> Load All Events
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <table id="eventTable">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Place</th>
+            </tr>
+            </thead>
+            <tbody id="eventTable-body"></tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<script>
+
+    const url = 'http://localhost:8080/App_1_war_exploded/event'
+
+    function loadAllEvents(data){
+        const table_body = $('#eventTable-body ');
+        table_body.empty();
+        $.each(data, function (index, event) {
+            table_body.append(`
+                <tr>
+                    <td>${event.eid}</td>
+                    <td>${event.ename}</td>
+                    <td>${event.edescription}</td>
+                    <td>${event.edate}</td>
+                    <td>${event.eplace}</td>
+                </tr>
+            `);
+        });
+    }
+    $('#btnLoadAll').click(function (){
+        $.ajax({
+            url : url,
+            method : 'GET',
+            success : function (data){
+                loadAllEvents(data);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Data Loaded',
+                    text: 'All events have been loaded successfully!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            },
+            error:function (){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Error fetching event data!',
+                });
+            }
+        })
+    })
+    $('#btnSave').click(function (){
+        const event = {
+            eid : $('#eventId').val(),
+            ename : $('#eventName').val(),
+            edescription : $('#eventDescription').val(),
+            edate : $('#eventDate').val(),
+            eplace : $('#eventPlace').val()
+        };
+        if (!event.eid) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Information',
+                text: 'Event ID is required!',
+            });
+            return;
+        }
+
+        $.ajax({
+            url : url,
+            method : 'POST',
+            contentType : 'application/json',
+            data : JSON.stringify(event),
+            success : function (response){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Event has been saved successfully!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                loadAllEvents(data);
+                $('#eventForm')[0].reset();
+            },
+            error : function (){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to save the event!',
+                });
+            }
+        });
+    })
+    $("#btnUpdate").click(function (){
+        const  event = {
+            eid : $('#eventId').val(),
+            ename : $('#eventName').val(),
+            edescription : $('#eventDescription').val(),
+            edate : $('#eventDate').val(),
+            eplace : $('#eventPlace').val()
+        };
+        if (!event.eid) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Information',
+                text: 'Please select an event to update!',
+            });
+            return;
+        }
+        $.ajax({
+            url : url,
+            method : 'PUT',
+            contentType : 'application/json',
+            data : JSON.stringify(event),
+            success : function (response){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Updated!',
+                    text: 'Event has been updated successfully!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                loadAllEvents(data);
+                $('#eventForm')[0].reset();
+            },
+            error : function (){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to update the event!',
+                });
+            }
+        });
+    })
+    $('#btnDelete').click(function () {
+        const eid = $("#eventId").val();
+
+        if (!eid) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Information',
+                text: 'Please select an event to delete!',
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "http://localhost:8080/App_1_war_exploded/path?eid=" + eid,
+                    method: 'DELETE',
+                    dataType: 'text', // Since backend returns plain text
+                    success: function (response) {
+                        Swal.fire(
+                            'Deleted!',
+                            response, // Show server response ("Event deleted successfully")
+                            'success'
+                        );
+                        loadAllEvents(); // Reload events (remove `data` if not needed)
+                        $('#eventForm')[0].reset();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Delete error:", error); // Log error for debugging
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed to delete the event: ' + xhr.responseText,
+                        });
+                    }
+                });
+            }
+        });
+    });
+    $(document).on('click', '#eventTable-body tr', function() {
+        const cells = $(this).children('td');
+        $('#eventId').val(cells.eq(0).text());
+        $('#eventName').val(cells.eq(1).text());
+        $('#eventDescription').val(cells.eq(2).text());
+        $('#eventDate').val(cells.eq(3).text());
+        $('#eventPlace').val(cells.eq(4).text());
+    });
+</script>
+</body>
+</html>

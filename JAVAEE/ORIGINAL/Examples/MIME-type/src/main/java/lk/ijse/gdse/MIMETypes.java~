@@ -1,0 +1,98 @@
+package lk.ijse.gdse;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@MultipartConfig
+@WebServlet("/mime")
+public class MIMETypes extends HttpServlet {
+
+    // read JSON Array data form HTTP request body
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.readTree(req.getReader());
+
+        if (jsonNode.isArray()){
+            for (int i = 0; i < jsonNode.size(); i++) {
+                JsonNode node = jsonNode.get(i);
+
+                String name = node.get("name").asText();
+                String address = node.get("address").asText();
+
+                resp.setContentType("text/plain");
+                resp.getWriter().write(name + " " + address + "\n");
+            }
+        }
+        // another type for array
+        /*mapper.readValue(req.getReader(), new TypeReference<List<JsonNode>>() {});
+        for(JsonNode node : jsonNode){
+            String name = node.get("name").asText();
+            String address = node.get("address").asText();
+
+            resp.setContentType("text/plain");
+            resp.getWriter().write(name + " " + address + "\n");
+        }*/
+    }
+
+   /* // read JSON data form HTTP request body
+    @Override
+    protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.readTree(req.getReader());
+
+        String name = jsonNode.get("name").asText();
+        String address = jsonNode.get("address").asText();
+
+        resp.setContentType("text/plain");
+        resp.getWriter().write(name + "\n" + address + "\n");
+    }*/
+
+
+    //read form data from http request body
+    /*@Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String name = req.getParameter("name");
+        Part file1 = req.getPart("file1");
+        Part file2 = req.getPart("file2");
+        String submittedFileName1 = file1.getSubmittedFileName();
+        String submittedFileName2 = file2.getSubmittedFileName();
+
+        resp.setContentType("text/plain");
+        resp.getWriter().write(name + "\n" + submittedFileName1 + "\n" + submittedFileName2);
+    }*/
+
+    //read x-www-form-urlencoded data from http request body.
+    /*@Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String name = req.getParameter("name");
+        String address = req.getParameter("address");
+        resp.setContentType("text/plain");
+        resp.getWriter().write(name + "\n" + address);
+    }*/
+
+    // read text/plain data from http request body.
+    /*@Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getContentType(); // content type
+
+        String collect = new BufferedReader(new InputStreamReader(req.getInputStream())).lines().collect(Collectors.joining("\n"));
+        resp.setContentType("text/plain");
+        resp.getWriter().write(collect);
+
+    }*/
+}
