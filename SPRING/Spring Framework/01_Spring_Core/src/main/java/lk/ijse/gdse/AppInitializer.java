@@ -14,7 +14,7 @@ public class AppInitializer {
         context.register(AppConfig.class);
         context.refresh();
 
-        SpringBean springBean1 = context.getBean(SpringBean.class);
+        /*SpringBean springBean1 = context.getBean(SpringBean.class);
         springBean1.test();
         System.out.println(springBean1);
 
@@ -22,7 +22,7 @@ public class AppInitializer {
         System.out.println(testBean1);
 
         TestBean2 testBean2 = context.getBean(TestBean2.class);
-        System.out.println(testBean2);
+        System.out.println(testBean2);*/
 
         //long way
         /*Runtime.getRuntime().addShutdownHook(new Thread(){
@@ -45,10 +45,20 @@ public class AppInitializer {
         SpringBean springBean4 = (SpringBean) context.getBean("springbean",SpringBean.class);
         System.out.println(springBean4);*/
 
-        MyConnection myConnection = context.getBean(MyConnection.class);
+        /*MyConnection myConnection = context.getBean(MyConnection.class);
         System.out.println(myConnection);
         MyConnection myConnection1 = (MyConnection) context.getBean("myConnection");
+        System.out.println(myConnection1);*/
+
+        TestBean1 testBean1 = context.getBean(TestBean1.class);
+        System.out.println(testBean1);
+        TestBean1 testBean2 = context.getBean(TestBean1.class);
+        System.out.println(testBean2);
+
+        MyConnection myConnection1 = context.getBean(MyConnection.class);
         System.out.println(myConnection1);
+        MyConnection myConnection2 = (MyConnection) context.getBean("myConnection");
+        System.out.println(myConnection2);
 
         // short way
         context.registerShutdownHook();

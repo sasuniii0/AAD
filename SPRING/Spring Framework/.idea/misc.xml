@@ -5,6 +5,8 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/01_Spring_Core/pom.xml" />
+        <option value="$PROJECT_DIR$/02_SpringBean_Lifecycle/pom.xml" />
+        <option value="$PROJECT_DIR$/03_Spring_With_DepencencyInjection/pom.xml" />
       </list>
     </option>
   </component>
