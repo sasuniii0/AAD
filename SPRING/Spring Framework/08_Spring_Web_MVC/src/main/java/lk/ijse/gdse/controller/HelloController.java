@@ -7,14 +7,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController // wenama ui eka hadnwa nam api use krnna oni  me annotation eka..
 @RequestMapping("hello")
-@Controller // view return krnnn puluwn... me project ekem ui hdnwa nam @Controller annotation thamai use krnna one...
+//@Controller
+// view return krnnn puluwn... me project ekem ui hdnwa nam @Controller annotation thamai use krnna one...
 public class HelloController {
     public HelloController(){
         System.out.println("Hello Controller");
     }
 
     // ekama controller eke multiple mappings thiyagnna puluwan...
-
     @GetMapping()
     public String hello(){
         return "Hello Spring";

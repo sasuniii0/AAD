@@ -5,7 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
-@ComponentScan("lk.ijse.gdse, lk.ijse.gdse.controller")
+@ComponentScan("lk.ijse.gdse.bean")
 @EnableWebMvc
 public class WebAppConfig {
+
 }
