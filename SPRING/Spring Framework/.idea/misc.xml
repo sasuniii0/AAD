@@ -14,7 +14,15 @@
         <option value="$PROJECT_DIR$/06_Runtime_Value_Injection/pom.xml" />
         <option value="$PROJECT_DIR$/07_Spring_Environment/pom.xml" />
         <option value="$PROJECT_DIR$/08_Spring_Web_MVC/pom.xml" />
+        <option value="$PROJECT_DIR$/09_REST_Controllers/pom.xml" />
+        <option value="$PROJECT_DIR$/09_REST_Controller/pom.xml" />
+        <option value="$PROJECT_DIR$/09_REST/pom.xml" />
       </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/09_REST_Controllers/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_23" project-jdk-name="corretto-21" project-jdk-type="JavaSDK">
