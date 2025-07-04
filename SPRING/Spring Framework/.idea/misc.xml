@@ -21,6 +21,7 @@
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/09_REST/pom.xml" />
         <option value="$PROJECT_DIR$/09_REST_Controllers/pom.xml" />
       </set>
     </option>

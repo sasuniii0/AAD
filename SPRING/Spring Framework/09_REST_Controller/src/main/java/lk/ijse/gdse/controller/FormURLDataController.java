@@ -3,7 +3,6 @@ package lk.ijse.gdse.controller;
 import lk.ijse.gdse.dto.UserDTO;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 
 @RestController
 @RequestMapping("/formurl")

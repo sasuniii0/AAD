@@ -13,7 +13,6 @@
         <module name="08_Spring_Web_MVC" />
         <module name="04_FullMode_vs_LightMode" />
         <module name="Example" />
-        <module name="09_REST" />
         <module name="05_Configuration" />
         <module name="01_Spring_Core" />
         <module name="02_SpringBean_Lifecycle" />
@@ -21,6 +20,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="09_REST" target="21" />
       <module name="09_REST_Controllers" target="21" />
     </bytecodeTargetLevel>
   </component>
