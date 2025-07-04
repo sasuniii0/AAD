@@ -1,37 +1,38 @@
 package lk.ijse.gdse.controller;
 
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("hello")
 @RestController
 public class HelloController {
-    @RequestMapping("post/one")
+    @GetMapping("post/one")
     public String post(){
         return "POST";
     }
-    @RequestMapping("2")
+    @GetMapping("2")
     public String get2(){
         return "GET2";
     }
-    @RequestMapping("get")
+    @GetMapping("get")
     public String get(){
         return "GET";
     }
-    @RequestMapping("put/one")
+    @GetMapping("put/one")
     public String put(){
         return "PUT";
     }
-    @RequestMapping("delete/one")
+    @GetMapping("delete/one")
     public String delete(){
         return "DELETE";
     }
-    @RequestMapping("get/one")
+    @GetMapping("get/one")
     public String getOne(){
         return "GET";
     }
-    @RequestMapping("patch/one")
+    @GetMapping("patch/one")
     public String patch(){
         return "PATCH";
     }
