@@ -43,5 +43,10 @@ public class JobServiceImpl implements JobService {
         return jobRepository.findJobByJobTitleContainingIgnoreCase(keyword);
     }
 
+    @Override
+    public JobDTO getJob(String id) {
+        return modelMapper.map(jobRepository.findById(Integer.valueOf(id)).get(), JobDTO.class);
+    }
+
 
 }

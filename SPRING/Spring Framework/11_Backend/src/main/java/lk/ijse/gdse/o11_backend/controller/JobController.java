@@ -28,6 +28,11 @@ public class JobController {
         jobService.saveJob(jobDTO);
     }
 
+    @GetMapping("get/{id}")
+    public JobDTO getJob(@PathVariable String id){
+        return jobService.getJob(id);
+    }
+
     @PutMapping("update")
     public void updateJob(@RequestBody JobDTO jobDTO){
         jobService.updateJob(jobDTO);
