@@ -69,6 +69,7 @@ function loadAllJobs() {
                         <td>${job.company}</td>
                         <td>${job.location}</td>
                         <td>${job.type}</td>
+                        <td>${job.jobDescription}</td>
                         <td>
                             <button class="btn btn-sm ${job.status === 'Active' ? 'btn-success' : 'btn-secondary'} change-status-btn" data-id="${job.id}">
                                 ${job.status}
@@ -147,6 +148,7 @@ function searchJobs(keyword) {
                         <td>${job.company}</td>
                         <td>${job.location}</td>
                         <td>${job.type}</td>
+                        <td>${job.description}</td>
                         <td>${job.status}</td>
                         <td>
                             <button class="btn btn-sm btn-warning me-1" onclick="editJob('${job.id}')">Edit</button>

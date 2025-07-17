@@ -13,7 +13,13 @@ import java.util.List;
 public interface JobRepository extends JpaRepository<Job,Integer> {
     @Modifying
     @Transactional
-    @Query(value = "UPDATE Job j SET j.status = 'Deactivate' WHERE j.id = ?1" ,nativeQuery = true)
+    @Query(value = "UPDATE Job j\n" +
+            "SET j.status = CASE\n" +
+            "                 WHEN j.status = 'Active' THEN 'Deactivate'\n" +
+            "                 WHEN j.status = 'Deactivate' THEN 'Active'\n" +
+            "                 ELSE j.status\n" +
+            "               END\n" +
+            "WHERE j.id = ?1\n" ,nativeQuery = true)
     void updateJobStatus(String id);
     List<Job> findJobByJobTitleContainingIgnoreCase(String keyword);
 }
