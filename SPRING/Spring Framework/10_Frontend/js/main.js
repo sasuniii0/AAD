@@ -1,7 +1,10 @@
 const api = 'http://localhost:8080/api/v1/job'
+let currentPage = 0;
+const size = 5;
 
 $(document).ready(function() {
     loadAllJobs();
+    loadJobPage()
 
     $('#saveJobBtn').click(function () {
         const job = {
@@ -163,8 +166,6 @@ function searchJobs(keyword) {
     })
 }
 
-
-
 function clearAddJobForm() {
     $('#jobTitle').val('');
     $('#companyName').val('');
@@ -172,4 +173,91 @@ function clearAddJobForm() {
     $('#jobType').val('Full-time');
     $('#jobDescription').val('');
 }
+
+async function loadJobPage(page = 0) {
+    currentPage = page;
+
+    $.ajax({
+        url: `${api}?page=${page}&size=${size}`,
+        method: "GET",
+        data: { page: page, size: size },
+        dataType: "json",
+        success: function (data) {
+            renderJobs(data.content);
+            createPagination(data.totalPages, data.number);
+        },
+        error: function (xhr, status, err) {
+            console.error("loadEventPage error:", status, err, xhr);
+            const msg = `Failed to load page ${page}: ${xhr.status} ${xhr.statusText}`;
+            showToast(msg, 'danger');
+        }
+    });
+}
+
+function renderJobs(jobs) {
+    const tbody = $('#jobsTableBody');
+    tbody.empty();
+
+    jobs.forEach(job => {
+        const row = `
+            <tr>
+                <td>${job.id ?? ''}</td>
+                <td>${job.jobTitle ?? ''}</td>
+                <td>${job.company ?? ''}</td>
+                <td>${job.location ?? ''}</td>
+                <td>${job.type ?? ''}</td>
+                <td>${job.jobDescription ?? ''}</td>
+                <td>
+                    <button class="btn btn-sm ${job.status === 'Active' ? 'btn-success' : 'btn-secondary'} change-status-btn" data-id="${job.id}">
+                        ${job.status}
+                    </button>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-warning me-1" onclick="editJob('${job.id}')">Edit</button>
+                </td>
+            </tr>`;
+        tbody.append(row);
+    });
+}
+
+
+function createPagination(totalPages, currentPage) {
+    const pagination = $('#pagination');
+    pagination.empty();
+
+    // Previous Button
+    const prevLi = $(`<li class="page-item ${currentPage === 0 ? 'disabled' : ''}">
+                        <a class="page-link" href="#">Previous</a>
+                      </li>`);
+    prevLi.click(function (e) {
+        e.preventDefault();
+        if (currentPage > 0) loadJobPage(currentPage - 1);
+    });
+    pagination.append(prevLi);
+
+    // Page Numbers
+    for (let i = 0; i < totalPages; i++) {
+        const pageItem = $(`<li class="page-item ${i === currentPage ? 'active' : ''}">
+                                <a class="page-link" href="#">${i + 1}</a>
+                             </li>`);
+        pageItem.click(function (e) {
+            e.preventDefault();
+            loadJobPage(i);
+        });
+        pagination.append(pageItem);
+    }
+
+    // Next Button
+    const nextLi = $(`<li class="page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}">
+                        <a class="page-link" href="#">Next</a>
+                      </li>`);
+    nextLi.click(function (e) {
+        e.preventDefault();
+        if (currentPage < totalPages - 1) loadJobPage(currentPage + 1);
+    });
+    pagination.append(nextLi);
+}
+
+
+
 
