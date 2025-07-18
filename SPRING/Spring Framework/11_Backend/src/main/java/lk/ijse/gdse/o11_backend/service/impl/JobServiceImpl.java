@@ -7,6 +7,9 @@ import lk.ijse.gdse.o11_backend.service.JobService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,6 +49,12 @@ public class JobServiceImpl implements JobService {
     @Override
     public JobDTO getJob(String id) {
         return modelMapper.map(jobRepository.findById(Integer.valueOf(id)).get(), JobDTO.class);
+    }
+
+    @Override
+    public Page<Job> getJobs(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return jobRepository.findAll(pageable);
     }
 
 

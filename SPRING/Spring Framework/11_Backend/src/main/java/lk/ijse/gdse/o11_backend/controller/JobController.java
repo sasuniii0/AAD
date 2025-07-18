@@ -4,6 +4,7 @@ import lk.ijse.gdse.o11_backend.dto.JobDTO;
 import lk.ijse.gdse.o11_backend.entity.Job;
 import lk.ijse.gdse.o11_backend.service.impl.JobServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,6 +52,13 @@ public class JobController {
     @GetMapping("search/{keyword}")
     public List<Job> searchJob(@PathVariable String keyword) {
         return jobService.searchJob(keyword);
+    }
+    @GetMapping
+    public Page<Job> getAllJobs(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        return jobService.getJobs(page, size);
     }
 
 }
