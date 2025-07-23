@@ -1,10 +1,9 @@
-const api = 'http://localhost:8080/api/v1/job'
+const api = 'http://localhost:8080/api/v1/job';
 let currentPage = 0;
 const size = 5;
 
 $(document).ready(function() {
-    loadAllJobs();
-    loadJobPage()
+    loadJobPage(0);
 
     $('#saveJobBtn').click(function () {
         const job = {
@@ -23,7 +22,7 @@ $(document).ready(function() {
             data: JSON.stringify(job),
             success: function () {
                 clearAddJobForm();
-                loadAllJobs();
+                loadJobPage(0);
             },
             error: function () {
                 alert('Failed to save job.');
@@ -32,9 +31,8 @@ $(document).ready(function() {
     });
 
     $('#updateJobBtn').click(function () {
-        const id = $('#editJobId').val();
         const job = {
-            id: id,
+            id: $('#editJobId').val(),
             jobTitle: $('#editJobTitle').val(),
             company: $('#editCompanyName').val(),
             location: $('#editJobLocation').val(),
@@ -49,7 +47,7 @@ $(document).ready(function() {
             contentType: 'application/json',
             data: JSON.stringify(job),
             success: function () {
-                loadAllJobs();
+                loadJobPage(currentPage);
             },
             error: function () {
                 alert('Failed to update job.');
@@ -57,39 +55,6 @@ $(document).ready(function() {
         });
     });
 });
-
-function loadAllJobs() {
-    $.ajax({
-        url: `${api}/all`,
-        method: 'GET',
-        success: function (jobs) {
-            let rows = '';
-            jobs.forEach((job, index) => {
-                rows += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${job.jobTitle}</td>
-                        <td>${job.company}</td>
-                        <td>${job.location}</td>
-                        <td>${job.type}</td>
-                        <td>${job.jobDescription}</td>
-                        <td>
-                            <button class="btn btn-sm ${job.status === 'Active' ? 'btn-success' : 'btn-secondary'} change-status-btn" data-id="${job.id}">
-                                ${job.status}
-                            </button>
-                        </td>
-                        <td>
-                            <button class="btn btn-sm btn-warning me-1" onclick="editJob('${job.id}')">Edit</button>
-                        </td>
-                    </tr>`;
-            });
-            $('#jobsTableBody').html(rows);
-        },
-        error: function () {
-            alert('Failed to load jobs.');
-        }
-    });
-}
 
 function editJob(id) {
     console.log("Fetching job with id:", id);
@@ -119,28 +84,28 @@ $(document).on('click', '.change-status-btn', function () {
         url: `${api}/status/${id}`,
         method: 'PATCH',
         success: function () {
-            loadAllJobs();
+            loadJobPage(currentPage);
         },
         error: function () {
             alert('Failed to change status.');
         }
-    })
-})
+    });
+});
 
 $('#searchInput').on('input', function () {
     const keyword = $(this).val().trim();
 
-    if (keyword=== ''){
-        loadAllJobs();
-    }else{
+    if (keyword === '') {
+        loadJobPage(0);
+    } else {
         searchJobs(keyword);
     }
-})
+});
 
 function searchJobs(keyword) {
     $.ajax({
         url: `${api}/search/${keyword}`,
-        method:'GET',
+        method: 'GET',
         success: function (jobs) {
             let rows = '';
             jobs.forEach((job, index) => {
@@ -151,19 +116,24 @@ function searchJobs(keyword) {
                         <td>${job.company}</td>
                         <td>${job.location}</td>
                         <td>${job.type}</td>
-                        <td>${job.description}</td>
-                        <td>${job.status}</td>
+                        <td>${job.jobDescription}</td>
+                        <td>
+                            <button class="btn btn-sm ${job.status === 'Active' ? 'btn-success' : 'btn-secondary'} change-status-btn" data-id="${job.id}">
+                                ${job.status}
+                            </button>
+                        </td>
                         <td>
                             <button class="btn btn-sm btn-warning me-1" onclick="editJob('${job.id}')">Edit</button>
                         </td>
                     </tr>`;
             });
             $('#jobsTableBody').html(rows);
+            $('#pagination').empty();
         },
         error: function () {
             alert('Failed to load jobs.');
         }
-    })
+    });
 }
 
 function clearAddJobForm() {
@@ -174,22 +144,21 @@ function clearAddJobForm() {
     $('#jobDescription').val('');
 }
 
-async function loadJobPage(page = 0) {
+function loadJobPage(page = 0) {
     currentPage = page;
 
     $.ajax({
         url: `${api}?page=${page}&size=${size}`,
         method: "GET",
-        data: { page: page, size: size },
         dataType: "json",
         success: function (data) {
             renderJobs(data.content);
             createPagination(data.totalPages, data.number);
         },
         error: function (xhr, status, err) {
-            console.error("loadEventPage error:", status, err, xhr);
+            console.error("loadJobPage error:", status, err, xhr);
             const msg = `Failed to load page ${page}: ${xhr.status} ${xhr.statusText}`;
-            showToast(msg, 'danger');
+            alert(msg);
         }
     });
 }
@@ -219,7 +188,6 @@ function renderJobs(jobs) {
         tbody.append(row);
     });
 }
-
 
 function createPagination(totalPages, currentPage) {
     const pagination = $('#pagination');
@@ -257,7 +225,3 @@ function createPagination(totalPages, currentPage) {
     });
     pagination.append(nextLi);
 }
-
-
-
-

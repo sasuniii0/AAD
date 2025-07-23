@@ -53,6 +53,7 @@ public class JobController {
     public List<Job> searchJob(@PathVariable String keyword) {
         return jobService.searchJob(keyword);
     }
+
     @GetMapping
     public Page<Job> getAllJobs(
             @RequestParam(defaultValue = "0") int page,
