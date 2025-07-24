@@ -41,13 +41,13 @@ public class JobController {
     }
 
     @GetMapping("get/{id}")
-    public ResponseEntity<APIResponse> getJob(@PathVariable String id){
+    public ResponseEntity<APIResponse> getJob(@Valid @PathVariable String id){
         JobDTO jobDTO = jobService.getJob(id);
         return ResponseEntity.ok(new APIResponse(200,"Success", jobDTO));
     }
 
     @PutMapping("update")
-    public ResponseEntity<APIResponse> updateJob(@RequestBody JobDTO jobDTO){
+    public ResponseEntity<APIResponse> updateJob(@Valid @RequestBody JobDTO jobDTO){
         jobService.updateJob(jobDTO);
         return ResponseEntity.ok(new APIResponse(200,"Success", "Job updated successfully"));
     }
@@ -59,13 +59,13 @@ public class JobController {
     }
 
     @PatchMapping("status/{id}")
-    public ResponseEntity<APIResponse> changeStatus(@PathVariable String id){
+    public ResponseEntity<APIResponse> changeStatus(@Valid @PathVariable String id){
         jobService.changeJobStatus(id);
         return ResponseEntity.ok(new APIResponse(200,"Success", "Job status changed successfully"));
     }
 
     @GetMapping("search/{keyword}")
-    public ResponseEntity<APIResponse> searchJob(@PathVariable String keyword) {
+    public ResponseEntity<APIResponse> searchJob(@Valid @PathVariable String keyword) {
         List<Job> jobs = jobService.searchJob(keyword);
         return ResponseEntity.ok(new APIResponse(200, "Success", jobs));
     }
