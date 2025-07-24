@@ -22,4 +22,6 @@ public interface JobRepository extends JpaRepository<Job,Integer> {
             "WHERE j.id = ?1\n" ,nativeQuery = true)
     void updateJobStatus(String id);
     List<Job> findJobByJobTitleContainingIgnoreCase(String keyword);
+
+    boolean existsByIdAndJobTitle(Integer id, String jobTitle);
 }

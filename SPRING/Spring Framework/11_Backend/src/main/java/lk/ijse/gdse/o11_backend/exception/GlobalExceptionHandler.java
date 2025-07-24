@@ -1,0 +1,34 @@
+package lk.ijse.gdse.o11_backend.exception;
+
+import lk.ijse.gdse.o11_backend.util.APIResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+//// This class is used to handle global exceptions in the application.
+/// Exception handling
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+    // class ek denn one exception eka throw krnn one wena
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<APIResponse> handleGenericException(Exception e) {
+        // Log the exception or return a custom error response
+       return new ResponseEntity(new APIResponse(500,e.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<APIResponse> handleResourceNotFoundException(ResourceNotFoundException e) {
+        return new ResponseEntity(new APIResponse(404, e.getMessage(), null), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ResourceAlreadyFoundException.class)
+    public ResponseEntity<APIResponse> handleResourceAlreadyFoundException(ResourceAlreadyFoundException e) {
+        return new ResponseEntity(new APIResponse(409, e.getMessage(), null), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(ResourseEmptyException.class)
+    public ResponseEntity<APIResponse> handleResourceEmptyException(ResourseEmptyException e) {
+        return new ResponseEntity(new APIResponse(204, e.getMessage(), null), HttpStatus.NO_CONTENT);
+    }
+}
