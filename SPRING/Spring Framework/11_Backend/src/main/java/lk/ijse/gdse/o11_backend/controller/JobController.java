@@ -6,18 +6,23 @@ import lk.ijse.gdse.o11_backend.entity.Job;
 import lk.ijse.gdse.o11_backend.service.impl.JobServiceImpl;
 import lk.ijse.gdse.o11_backend.util.APIResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @RequestMapping("api/v1/job")
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class JobController {
     private final JobServiceImpl jobService;
+
+   // Logger logger = Logger.getLogger(JobController.class.getName());
 
     // property injection
    /* @Autowired
@@ -35,6 +40,20 @@ public class JobController {
 
         // mehma use krnnth puluwn status eka wenama dala ok,created,accepted,bad_request,bad_gateway etc....
         // new keyword eka use krta kmk naa methana...
+
+       /* logger.info("Job created successfully");
+        logger.warning("Job created successfully");
+        logger.severe("Job created successfully");
+        logger.fine("Job created successfully");
+        logger.config("Job created successfully");*/
+
+        log.info("Job created successfully");
+        log.warn("Job created successfully");
+        log.error("Job created successfully");
+        log.debug("Job created successfully");
+        log.trace("Job created successfully");
+
+
         jobService.saveJob(jobDTO);
         return new ResponseEntity(new APIResponse(200, "Success", "Job created successfully"), HttpStatus.OK);
 
