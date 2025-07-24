@@ -1,5 +1,6 @@
 package lk.ijse.gdse.o11_backend.controller;
 
+import jakarta.validation.Valid;
 import lk.ijse.gdse.o11_backend.dto.JobDTO;
 import lk.ijse.gdse.o11_backend.entity.Job;
 import lk.ijse.gdse.o11_backend.service.impl.JobServiceImpl;
@@ -28,7 +29,7 @@ public class JobController {
     }*/
 
     @PostMapping("create")
-    public ResponseEntity<APIResponse> createJob(@RequestBody JobDTO jobDTO){
+    public ResponseEntity<APIResponse> createJob( @Valid @RequestBody JobDTO jobDTO){
        /*jobService.saveJob(jobDTO);
        return ResponseEntity.ok(new APIResponse(200,"Success", "Job created successfully"));*/
 
