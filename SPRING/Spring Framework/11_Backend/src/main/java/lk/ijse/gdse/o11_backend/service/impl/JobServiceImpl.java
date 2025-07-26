@@ -33,7 +33,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public void updateJob(JobDTO jobDTO ) {
-        if (jobRepository.existsById(jobDTO.getId())) {
+        if (!jobRepository.existsById(jobDTO.getId())) {
             throw new ResourceNotFoundException("Job does not exist");
         }
         jobRepository.save(modelMapper.map(jobDTO, Job.class));

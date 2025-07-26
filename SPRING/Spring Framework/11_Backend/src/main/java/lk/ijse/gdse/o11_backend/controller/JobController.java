@@ -12,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @RequestMapping("api/v1/job")
@@ -90,12 +92,14 @@ public class JobController {
     }
 
     @GetMapping
-    public ResponseEntity<APIResponse> getAllJobs(
+    public ResponseEntity<Page<Job>> getAllJobs(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
     ) {
         Page<Job> jobPage = jobService.getJobs(page, size);
-        return ResponseEntity.ok(new APIResponse(200, "Success", jobPage));
+        return ResponseEntity.ok(jobPage); // Spring auto-serializes Page content
     }
+
+
 
 }

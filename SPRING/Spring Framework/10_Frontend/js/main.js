@@ -151,9 +151,14 @@ function loadJobPage(page = 0) {
         url: `${api}?page=${page}&size=${size}`,
         method: "GET",
         dataType: "json",
-        success: function (data) {
-            renderJobs(data.content);
-            createPagination(data.totalPages, data.number);
+        success: function (res) {
+            if (res && Array.isArray(res.content)) {
+                renderJobs(res.content);
+                createPagination(res.totalPages, res.number);
+            } else {
+                console.warn("Invalid job data:", res);
+                renderJobs([]);
+            }
         },
         error: function (xhr, status, err) {
             console.error("loadJobPage error:", status, err, xhr);
@@ -163,9 +168,15 @@ function loadJobPage(page = 0) {
     });
 }
 
+
 function renderJobs(jobs) {
     const tbody = $('#jobsTableBody');
     tbody.empty();
+
+    if (!Array.isArray(jobs) || jobs.length === 0) {
+        tbody.append(`<tr><td colspan="8" class="text-center text-muted">No jobs found.</td></tr>`);
+        return;
+    }
 
     jobs.forEach(job => {
         const row = `
