@@ -2,6 +2,8 @@ package lk.ijse.gdse.o13_auth_bn.service;
 
 import lk.ijse.gdse.o13_auth_bn.dto.AuthDTO;
 import lk.ijse.gdse.o13_auth_bn.dto.AuthResponseDTO;
+import lk.ijse.gdse.o13_auth_bn.dto.UserDTO;
+import lk.ijse.gdse.o13_auth_bn.entity.Role;
 import lk.ijse.gdse.o13_auth_bn.entity.User;
 import lk.ijse.gdse.o13_auth_bn.repository.UserRepository;
 import lk.ijse.gdse.o13_auth_bn.util.JWTUtil;
@@ -25,5 +27,19 @@ public class AuthService {
 
         String token = jwtUtil.generateToken(authDTO.getUserName());
         return new AuthResponseDTO(token);
+    }
+
+    public String register(UserDTO userDTO) {
+        if (userRepository.findByUsername(userDTO.getUserName()).isPresent()) {
+            throw new RuntimeException("User already exists");
+        }
+        User user  = User.builder()
+                .userName(userDTO.getUserName())
+                .password(passwordEncoder.encode(userDTO.getPassword()))
+                .email(userDTO.getEmail())
+                .role(Role.valueOf(userDTO.getRole()))
+                .build();
+        userRepository.save(user);
+        return "User registered successfully";
     }
 }
