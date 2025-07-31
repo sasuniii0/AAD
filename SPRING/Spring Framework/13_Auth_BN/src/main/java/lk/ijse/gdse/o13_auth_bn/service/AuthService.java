@@ -20,7 +20,7 @@ public class AuthService {
     private final JWTUtil jwtUtil;
 
     public AuthResponseDTO authenticate(AuthDTO authDTO) {
-        User user = userRepository.findByUsername(authDTO.getUserName()).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByUserName(authDTO.getUserName()).orElseThrow(() -> new RuntimeException("User not found"));
         if (!passwordEncoder.matches(authDTO.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Invalid Credentials");
         }
@@ -30,7 +30,7 @@ public class AuthService {
     }
 
     public String register(UserDTO userDTO) {
-        if (userRepository.findByUsername(userDTO.getUserName()).isPresent()) {
+        if (userRepository.findByUserName(userDTO.getUserName()).isPresent()) {
             throw new RuntimeException("User already exists");
         }
         User user  = User.builder()

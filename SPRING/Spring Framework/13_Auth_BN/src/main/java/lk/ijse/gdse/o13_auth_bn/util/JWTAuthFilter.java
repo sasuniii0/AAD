@@ -26,7 +26,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         final String jwtToken;
         final String username;
 
-        if (authorizationHeader == null && !authorizationHeader.startsWith("Bearer ")) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
