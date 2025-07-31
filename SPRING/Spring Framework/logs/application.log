@@ -1095,3 +1095,8 @@ java.lang.NullPointerException: Cannot invoke "String.startsWith(String)" becaus
 2025-07-31T15:50:36.314+05:30  INFO 14716 --- [13_Auth_BN] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
 2025-07-31T15:50:36.315+05:30  INFO 14716 --- [13_Auth_BN] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
 2025-07-31T15:50:36.316+05:30  INFO 14716 --- [13_Auth_BN] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-07-31T16:17:56.820+05:30  INFO 14716 --- [13_Auth_BN] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-31T16:17:56.829+05:30  INFO 14716 --- [13_Auth_BN] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-07-31T16:17:56.835+05:30  INFO 14716 --- [13_Auth_BN] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-31T16:17:56.838+05:30  INFO 14716 --- [13_Auth_BN] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-07-31T16:17:56.849+05:30  INFO 14716 --- [13_Auth_BN] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
