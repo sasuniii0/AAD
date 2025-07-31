@@ -18,6 +18,8 @@
         <option value="$PROJECT_DIR$/09_REST_Controller/pom.xml" />
         <option value="$PROJECT_DIR$/09_REST/pom.xml" />
         <option value="$PROJECT_DIR$/11_Backend/pom.xml" />
+        <option value="$PROJECT_DIR$/12_Spring_Security_FN/pom.xml" />
+        <option value="$PROJECT_DIR$/13_Auth_BN/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
