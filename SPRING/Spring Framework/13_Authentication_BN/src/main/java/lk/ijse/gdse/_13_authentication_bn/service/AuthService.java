@@ -26,7 +26,10 @@ public class AuthService {
         }
 
         String token = jwtUtil.generateToken(authDTO.getUsername());
-        return new AuthResponseDTO(token);
+        String role = user.getRole().name(); // Get the user's role
+        String username = user.getUsername(); // Get the user's username
+
+        return new AuthResponseDTO(token, role,username);
     }
 
     public String register(UserDTO userDTO) {

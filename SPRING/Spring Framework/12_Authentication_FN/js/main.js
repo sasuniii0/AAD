@@ -1,3 +1,4 @@
+
 const api = "http://localhost:8080/auth";
 
 
@@ -26,17 +27,23 @@ document.addEventListener('DOMContentLoaded',()=>{
                 const result = await response.json();
                 console.log('login response ',result)
 
-                const token= result.data;
+                const data = result.data;
+                const token = result.data.accessToken;
+                const role = result.data.role;
 
-                if (token){
-                    document.cookie = `jwtToken=${token}; path=/; max-age=3600`; // Set cookie for 1 hour
-                    console.log('Token set in cookie:', token);
-                    /*localStorage.setItem('jwtToken',token)*/
-                    alert("SignIn Successfully!")
-                    window.location.href = "dashboard.html"
-                }else{
-                    alert('Authentication failed : Token not found');
+                sessionStorage.setItem('jwtToken', token);
+                sessionStorage.setItem('userRole', role);
+
+                if (data && data.username && data.role) {
+                    document.cookie = `jwtToken=${data.accessToken}; path=/; max-age=3600`;
+                    sessionStorage.setItem('userRole', data.role);
+
+                    alert("SignIn Successfully!");
+                    window.location.href = "dashboard.html";
+                } else {
+                    alert('Authentication failed : Token or role not found');
                 }
+
             }catch(err){
                 console.error(err)
                 alert('Error during sign in.')
@@ -46,6 +53,5 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
 })
-
 
 
