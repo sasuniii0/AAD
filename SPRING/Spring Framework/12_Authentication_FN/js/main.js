@@ -1,4 +1,6 @@
 const api = "http://localhost:8080/auth";
+const auth_base = "http://localhost:8080/hello";
+
 
 document.addEventListener('DOMContentLoaded',()=>{
     const path = window.location.pathname;
@@ -43,7 +45,6 @@ document.addEventListener('DOMContentLoaded',()=>{
 
         })
     }
-    //signing
     if (path.includes('index.html') || path.endsWith('/')){
         const signingFrom = document.querySelector('form');
         signingFrom.addEventListener('submit',async (e)=>{
@@ -81,4 +82,55 @@ document.addEventListener('DOMContentLoaded',()=>{
             }
         })
     }
+
+    /*if (path.includes("dashboard.html")) {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            window.location.href = "index.html";
+        } else {
+            // Try calling /hello/admin first
+            fetch("http://localhost:8080/hello/admin", {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById("user-name").textContent = `Welcome, Admin`;
+                        console.log("Admin logged in");
+                    } else {
+                        // If not admin, try /hello/user
+                        return fetch("http://localhost:8080/hello/user", {
+                            method: "GET",
+                            headers: {
+                                Authorization: `Bearer ${token}`
+                            }
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    document.getElementById("user-name").textContent = `Welcome, User`;
+                                    console.log("User logged in");
+                                } else {
+                                    throw new Error("Unauthorized or unknown role");
+                                }
+                            });
+                    }
+                })
+                .catch(error => {
+                    console.error("Authentication error:", error);
+                    localStorage.removeItem("token");
+                    window.location.href = "index.html";
+                });
+        }
+    }*/
+
 })
+
+function logout() {
+    localStorage.removeItem('jwtToken');
+    alert('You have been logged out successfully.');
+    window.location.href = 'index.html';
+}
+
