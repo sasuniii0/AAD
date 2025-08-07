@@ -19,7 +19,7 @@
         <module name="02_SpringBean_Lifecycle" />
         <module name="06_Runtime_Value_Injection" />
       </profile>
-      <profile name="Annotation profile for 13_Authentication_BN" enabled="true">
+      <profile name="Annotation profile for 14_Spring_Testing" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -28,6 +28,7 @@
         </processorPath>
         <module name="O13_Auth_BN" />
         <module name="_13_Authentication_BN" />
+        <module name="O14_Spring_Testing" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -40,6 +41,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="O11_Backend" options="-parameters" />
       <module name="O13_Auth_BN" options="-parameters" />
+      <module name="O14_Spring_Testing" options="-parameters" />
       <module name="_13_Authentication_BN" options="-parameters" />
     </option>
   </component>
