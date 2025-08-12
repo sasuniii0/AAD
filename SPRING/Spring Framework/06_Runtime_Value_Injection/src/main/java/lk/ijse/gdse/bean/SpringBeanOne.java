@@ -17,11 +17,15 @@ public class SpringBeanOne implements InitializingBean {
 
 
    /* @Autowired(required = false)
-    public SpringBeanOne(@Value("Sasuni-Wijerathne") String name,@Value("21") int age,@Value("true") boolean isActive) {
+    public SpringBeanOne(@Value("Sasuni-Wijerathne") String name,
+    @Value("21") int age,@Value("true") boolean isActive) {
         System.out.println("Spring Bean One with name: " + name);
         System.out.println("Spring Bean One with age: " + age);
         System.out.println("Spring Bean One with isActive: " + isActive);
     }
+
+
+
     @Autowired(required = false)
     public SpringBeanOne(@Value("Sasuni-Wijerathne") String name,@Value("21") int age) {
         System.out.println("Spring Bean One with name: " + name);

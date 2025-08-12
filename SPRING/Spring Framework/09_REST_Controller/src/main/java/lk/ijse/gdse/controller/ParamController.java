@@ -12,7 +12,9 @@ public class ParamController {
     }
 
     @GetMapping(path = "test/{code}", params = {"id","name"})
-    public String get(@PathVariable("code") String code, @RequestParam("id") String id, @RequestParam("name") String name){
+    public String get(@PathVariable("code") String code,
+                      @RequestParam("id") String id,
+                      @RequestParam("name") String name){
         return code + " Hello "+id+" "+name;
     }
 }

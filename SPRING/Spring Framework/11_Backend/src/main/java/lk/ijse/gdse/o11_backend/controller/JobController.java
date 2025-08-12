@@ -24,17 +24,6 @@ import java.util.logging.Logger;
 public class JobController {
     private final JobServiceImpl jobService;
 
-   // Logger logger = Logger.getLogger(JobController.class.getName());
-
-    // property injection
-   /* @Autowired
-    private  JobService jobService;*/
-
-    //constructor injection
-    /* public JobController(JobService jobService) {
-       this.jobService = jobService;
-    }*/
-
     @PostMapping("create")
     public ResponseEntity<APIResponse> createJob( @Valid @RequestBody JobDTO jobDTO){
        /*jobService.saveJob(jobDTO);
@@ -68,9 +57,13 @@ public class JobController {
     }
 
     @PutMapping("update")
-    public ResponseEntity<APIResponse> updateJob(@Valid @RequestBody JobDTO jobDTO){
+    public ResponseEntity<APIResponse> updateJob(
+            @Valid @RequestBody JobDTO jobDTO){
         jobService.updateJob(jobDTO);
-        return ResponseEntity.ok(new APIResponse(200,"Success", "Job updated successfully"));
+        return ResponseEntity.ok(new APIResponse(
+                200,
+                "Success",
+                "Job updated successfully"));
     }
 
     @GetMapping("all")
@@ -100,6 +93,15 @@ public class JobController {
         return ResponseEntity.ok(jobPage); // Spring auto-serializes Page content
     }
 
+// Logger logger = Logger.getLogger(JobController.class.getName());
 
+    // property injection
+   /* @Autowired
+    private  JobService jobService;*/
+
+    //constructor injection
+    /* public JobController(JobService jobService) {
+       this.jobService = jobService;
+    }*/
 
 }

@@ -14,12 +14,18 @@ public class JobDTO {
 /*
     @NotBlank (message = "Company name cannot be empty")
 */
-    @Pattern(regexp = "^[A-Za-z\\s]+$", message = "Company name should contain only letters and spaces")
+    @Pattern(regexp = "^[A-Za-z\\s]+$",
+            message = "Company name should contain " +
+                    "only letters and spaces")
+
     private String company;
     private String location;
     @NotNull (message = "Job type cannot be empty")
     private String type;
-    @Size(min = 10, max = 1000, message = "Job description should be between 100 and 1000 characters")
+
+    @Size(min = 10, max = 1000,
+            message = "Job description should be " +
+                    "between 100 and 1000 characters")
     private String jobDescription;
     @NotEmpty (message = "Status cannot be empty")
     private String status;

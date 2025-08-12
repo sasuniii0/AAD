@@ -6,8 +6,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Boy {
+/*
     @Autowired
-    @Qualifier("girl2") // Specify which implementation of Aggreement to use
+*/
+
+
+    @Qualifier("girl2")
+    // Specify which implementation of Agreement to use
+
+
     Aggreement girl;
 
     public Boy(){

@@ -20,7 +20,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UsernameNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ApiResponse> handleUsernameNotFoundException() {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(404, "User not found", null));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ApiResponse(
+                        404,
+                        "User not found",
+                        null));
     }
 
     @ExceptionHandler(BadCredentialsException.class)

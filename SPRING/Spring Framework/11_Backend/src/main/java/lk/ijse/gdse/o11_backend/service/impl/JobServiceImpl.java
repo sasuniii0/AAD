@@ -1,5 +1,6 @@
 package lk.ijse.gdse.o11_backend.service.impl;
 
+import jakarta.validation.Valid;
 import lk.ijse.gdse.o11_backend.dto.JobDTO;
 import lk.ijse.gdse.o11_backend.entity.Job;
 import lk.ijse.gdse.o11_backend.exception.ResourceAlreadyFoundException;
@@ -83,4 +84,7 @@ public class JobServiceImpl implements JobService {
     }
 
 
+    public void deleteJob(@Valid String id) {
+
+    }
 }

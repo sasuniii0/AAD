@@ -14,7 +14,9 @@ public class AppConfig {
 /*
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 */
-    @Scope("prototype") // This bean will be created as a new instance each time it is requested
+    @Scope("prototype")
+    // This bean will be created as a new instance
+    // each time it is requested
     public MyConnection myConnection(){
         return new MyConnection();
     }

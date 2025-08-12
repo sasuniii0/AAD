@@ -30,7 +30,8 @@ public class ProductServiceImplTest {
 
     @BeforeEach
     public void setUp() {
-        // user builder pattern to create a products....this will be used in all test cases to avoid code duplication
+        // user builder pattern to create a products....
+        // this will be used in all test cases to avoid code duplication
         product = Product.builder()
                 .id(1L)
                 .name("TEST Product")
@@ -91,8 +92,12 @@ public class ProductServiceImplTest {
 
         productService.deleteProduct(1L);
 
-        verify(productRepository, times(1)).getProductById(1L);
-        verify(productRepository, times(1)).delete(any(Product.class));
+        verify(productRepository, times(
+                1))
+                .getProductById(1L);
+        verify(productRepository, times(
+                1))
+                .delete(any(Product.class));
     }
 
     @Test

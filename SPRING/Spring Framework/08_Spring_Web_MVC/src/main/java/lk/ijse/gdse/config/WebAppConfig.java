@@ -12,7 +12,10 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @Configuration
 @ComponentScan({"lk.ijse.gdse.bean","lk.ijse.gdse.controller"})
 @EnableWebMvc
+// This annotation is used to enable Spring MVC features
 public class WebAppConfig implements WebMvcConfigurer {
+
+
     @Bean
     public ViewResolver viewResolver(){
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
